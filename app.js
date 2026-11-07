@@ -54,9 +54,32 @@ function renderHouses(){ $('housesView').innerHTML=storyData.houses.map((h,i)=>`
 function renderChronicle(){let tasks=Object.values(state.taskHistory).flat().filter(t=>t.done).length;$('totalTasks').textContent=tasks;$('totalEpisodes').textContent=Object.keys(state.completedEpisodes).length;$('gamesPlayed').textContent=state.gamesPlayed;$('milestoneList').innerHTML=state.milestones.length?state.milestones.slice(0,20).map(m=>`<div class="timeline-item"><b>${esc(m.title)}</b><small>${esc(m.date)} · ${esc(m.detail)}</small></div>`).join(''):'<p class="muted">Your milestones will appear here as you make progress.</p>';$('reflection').value=state.reflections[today()]||'';$('checkpointList').innerHTML=[1,90,180,270,365].map(d=>`<div class="checkpoint"><b>${d}</b>Day ${d}<small>${state.day>=d?'Reached':'Upcoming'}</small></div>`).join('')}
 const creatureInfo={dragon:{name:'Ember',emoji:'🐉',mood:'A brave little dragon, ready to grow alongside you.'},owl:{name:'Wisp',emoji:'🦉',mood:'A thoughtful owl who enjoys quiet discoveries.'},fox:{name:'Thistle',emoji:'🦊',mood:'A clever fox who brings curiosity to every day.'}};
 function renderCompanion(){let chosen=state.companion;$('companionSetup').classList.toggle('hidden',!!chosen);$('companionCard').classList.toggle('hidden',!chosen);if(!chosen)return;let c=creatureInfo[chosen];$('companionArt').textContent=c.emoji;$('companionName').textContent=c.name;$('companionMood').textContent=c.mood;$('companionLevel').textContent=`Bond level ${Math.floor(state.companionBond/10)+1} · ${state.companionBond%10}/10 bond points`;$('companionProgress').style.width=(state.companionBond%10*10)+'%'}
-function tab(name){const target=$(String(name)+'View');if(!target){console.warn('Unknown navigation tab:',name);return false;}document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));target.classList.remove('hidden');document.querySelectorAll('.tab').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});try{if(name==='missions')renderMissions();if(name==='attributes')renderAttributes();if(name==='academy')renderHouses();if(name==='codex')renderCodex();if(name==='chronicle')renderChronicle();if(name==='companion')renderCompanion();if(name==='story')renderStory();if(name==='games')renderGames();}catch(err){console.error('Tab render failed:',name,err);}return true;}
-// Capture navigation taps before other page handlers. This keeps tab switching available even if a feature handler fails.
-document.addEventListener('click',event=>{const control=event.target.closest('.tab,[data-goto]');if(!control)return;const name=control.dataset.tab||control.dataset.goto;if(!name)return;event.preventDefault();event.stopImmediatePropagation();tab(name);},{capture:true});
+function tab(name){
+  const key=String(name||'').trim();
+  const target=$(key+'View');
+  if(!target){console.error('Navigation target missing:',key+'View');return false;}
+  $('welcomeView')?.classList.add('hidden');
+  $('appShell')?.classList.remove('hidden');
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+  target.classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(b=>{const active=b.dataset.tab===key;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});
+  try{
+    if(key==='missions')renderMissions(); else if(key==='attributes')renderAttributes(); else if(key==='academy')renderHouses(); else if(key==='codex')renderCodex(); else if(key==='chronicle')renderChronicle(); else if(key==='companion')renderCompanion(); else if(key==='story')renderStory(); else if(key==='games')renderGames();
+  }catch(err){console.error('Tab content render failed:',key,err);}
+  target.scrollIntoView?.({block:'start',behavior:'auto'});
+  return true;
+}
+// One delegated navigation handler. Bubble phase is intentional: do not suppress other controls' click handlers.
+function handleNavigationClick(event){
+  const target = event.target && event.target.nodeType === 1 ? event.target : event.target?.parentElement;
+  const control = target?.closest?.('.tab,[data-goto]');
+  if(!control || !document.getElementById('appShell')?.contains(control)) return;
+  const name = control.dataset.tab || control.dataset.goto;
+  if(!name) return;
+  event.preventDefault();
+  tab(name);
+}
+document.addEventListener('click', handleNavigationClick, false);
 function renderAll(){header();renderStory();renderMissions();renderAttributes();renderChronicle();renderCompanion()}
 function randomQuestion(){let qs=[{q:'Which process converts liquid water into water vapour?',a:['Condensation','Evaporation','Freezing'],c:1},{q:'Which component stores electrical energy?',a:['Capacitor','Resistor','Fuse'],c:0},{q:'What is the binary form of decimal 5?',a:['101','110','111'],c:0},{q:'Which instrument measures temperature?',a:['Ammeter','Thermometer','Voltmeter'],c:1},{q:'What is the main function of a control system?',a:['Regulate a process','Store files','Generate text'],c:0}] ;return qs[Math.floor(Math.random()*qs.length)]}
 function questionUI(container,kind,onAnswer){let q=randomQuestion();container.innerHTML=`<div class="game-question"><b>${q.q}</b><div class="game-options">${q.a.map((a,i)=>`<button data-answer="${i}">${a}</button>`).join('')}</div><p class="feedback" id="${kind}Feedback"></p></div>`;container.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{let ok=+b.dataset.answer===q.c;container.querySelectorAll('button').forEach(x=>x.disabled=true);container.querySelector('.feedback').textContent=ok?'Correct! Well done.':'Not quite. The correct answer is '+q.a[q.c]+'.';onAnswer(ok)})}
@@ -110,7 +133,7 @@ function checkReminders(){let now=new Date();state.notifiedSlots=state.notifiedS
 
 async function init(){storyData=await(await fetch('data/story.json')).json();state=load();state.day=Math.max(1,Math.min(365,state.day));
 let previousVisit=state.lastVisitDate;if(previousVisit&&previousVisit!==today()){let gap=Math.round((new Date(today()+'T12:00:00')-new Date(previousVisit+'T12:00:00'))/86400000);if(gap===2&&!state.dailyRecords[previousVisit]?.complete){state.runePending=true;}else if(gap>2){state.streak=0;state.runePending=false;}}
-state.lastVisitDate=today();if(!state.tasks[today()])dayTasks();$('themeToggle').onclick=()=>{state.theme=state.theme==='night'?'day':'night';save();header()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>tab(b.dataset.goto));$('completeDay').onclick=completeEpisode;$('nextDay').onclick=nextEpisode;
+state.lastVisitDate=today();if(!state.tasks[today()])dayTasks();$('themeToggle').onclick=()=>{state.theme=state.theme==='night'?'day':'night';save();header()};$('completeDay').onclick=completeEpisode;$('nextDay').onclick=nextEpisode;
 $('resetTasks').onclick=()=>{if(!confirm("Reset today's eight tasks and subtasks? Your previous saved days remain in the Chronicle."))return;state.tasks[today()]=taskDefaults.map(t=>({...t,subs:t.subs.map(name=>({name,done:false})),done:false,rewarded:false}));save();renderAll()};
 $('addQuestForm').onsubmit=e=>{e.preventDefault();let v=$('newQuest').value.trim();if(!v)return;(state.extraQuests[today()]??=[]).push({name:v,done:false});$('newQuest').value='';save();renderMissions()};
 $('startDuel').onclick=playDuel;$('startDungeon').onclick=playDungeon;$('startTournament').onclick=playTournament;$('startLogic').onclick=playLogic;$('startMemory').onclick=playMemory;
