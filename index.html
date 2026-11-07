@@ -3,12 +3,202 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#191a29">
 <meta name="description" content="A 365-day magical academy, personal growth and productivity RPG.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/app.css">
-<title>A Wizard Experience of 365 Days</title>
+<style>
+
+:root{
+ --bg:#f4f1eb;--paper:#fffdf9;--ink:#252437;--muted:#777487;--line:#e9e2d9;
+ --violet:#6659d6;--violet2:#eeeafd;--gold:#d9a957;--green:#27866c;
+ --red:#b85b64;--nav:#191a29;--shadow:0 12px 35px #24203912;--soft:#f0edf9;
+}
+body.night{
+ --bg:#111321;--paper:#1c2032;--ink:#f4f1ff;--muted:#b8b5c9;--line:#34374c;
+ --violet:#a79bff;--violet2:#302b4d;--gold:#edc477;--green:#69c6a5;
+ --red:#e08a92;--nav:#0b0d18;--shadow:0 14px 38px #0005;--soft:#29263f;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background .2s,color .2s}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:1px solid transparent;border-radius:12px;padding:10px 15px;background:var(--violet);color:white;font-weight:750;font-size:13px;box-shadow:0 3px 10px #29204412;transition:transform .15s,filter .15s,background .15s}
+button:hover{filter:brightness(1.06);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+header,main,footer{max-width:1120px;margin:auto;padding:18px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding-top:22px;padding-bottom:16px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.17em;font-weight:850;color:var(--gold)}
+.topbar h1{font-size:clamp(21px,4vw,31px);line-height:1.1;letter-spacing:.025em;margin:7px 0;font-weight:900}
+.topbar h1 span{display:block;color:var(--violet)}
+.icon-button{width:44px;height:44px;border-radius:50%;background:var(--paper);border:1px solid var(--line);color:var(--ink);font-size:20px}
+main{padding-top:8px;padding-bottom:100px}
+h2,h3,h4{line-height:1.2;letter-spacing:-.025em}
+h2{font-size:clamp(24px,4vw,34px);margin:7px 0 10px}
+h3{font-size:20px;margin:7px 0 10px}
+p{margin:8px 0}
+.muted{color:var(--muted)}
+.hero{padding:clamp(22px,4vw,36px);border-radius:24px;background:linear-gradient(120deg,#5148b8,#7668dc 58%,#aa91dc);color:#fff;display:flex;flex-direction:column;justify-content:space-between;min-height:230px;box-shadow:0 18px 45px #5148b82b;position:relative;overflow:hidden}
+.hero:after{content:"✦";position:absolute;right:7%;top:7%;font-size:110px;color:#ffffff18;pointer-events:none}
+.hero .eyebrow{color:#f5d99d}
+.hero h2{font-size:clamp(31px,5vw,48px);max-width:700px;margin:12px 0}
+.hero p{max-width:650px;color:#f2efff;font-size:16px}
+.hero-bottom{margin-top:24px;display:grid;gap:10px;position:relative;z-index:1}
+.hero-bottom>div:first-child{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.hero-bottom span{color:#e4ddff}
+.year-track,.progress-track{height:9px;background:var(--line);border-radius:30px;overflow:hidden}
+.year-track{background:#ffffff40}.year-track i,.progress-track i{display:block;height:100%;width:0;background:var(--gold);border-radius:30px;transition:width .3s}
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:13px 0}
+.quick-stats article,.panel,.game-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.quick-stats article{padding:14px 16px}
+.quick-stats small{display:block;font-size:9px;letter-spacing:.14em;color:var(--muted);font-weight:850}
+.quick-stats b{display:block;color:var(--violet);font-size:21px;margin-top:4px}
+.tabs{display:flex;gap:7px;overflow:auto;padding:9px 0 17px;scrollbar-width:none;position:sticky;top:0;z-index:8;background:var(--bg)}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{white-space:nowrap;background:var(--paper);color:var(--muted);border:1px solid var(--line);box-shadow:none;padding:9px 13px}
+.tabs button.active{background:var(--nav);color:#fff;border-color:var(--nav)}
+.view{animation:appear .22s ease}
+@keyframes appear{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+.panel{padding:clamp(17px,3vw,25px);margin:10px 0 14px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:9px 0 15px}
+.section-heading p{margin:4px 0}
+.pill{background:var(--violet2);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:11px;color:var(--violet);font-weight:750;white-space:nowrap}
+.dashboard-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+.dashboard-grid .panel{margin:0}
+.welcome-panel{background:linear-gradient(140deg,var(--paper),var(--violet2))}
+.welcome-panel p{color:var(--muted)}
+.primary{background:var(--violet);color:white}
+.secondary{background:var(--violet2);color:var(--ink);border-color:var(--line);box-shadow:none}
+.text-button{background:transparent;color:var(--violet);padding:7px 9px;box-shadow:none}
+.mission-tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin:10px 0}
+.import-label{cursor:pointer}.import-label input{display:none}
+.mission-list{display:grid;gap:11px}
+.mission-card{background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:var(--shadow)}
+.mission-head{display:flex;align-items:flex-start;gap:12px}
+.mission-number{width:38px;height:38px;display:grid;place-items:center;background:var(--violet2);border-radius:12px;color:var(--violet);font-weight:900;flex-shrink:0}
+.mission-title-wrap{flex:1;min-width:0}
+.mission-title{width:100%;font-weight:850;color:var(--ink);background:transparent;border:0;border-bottom:1px dashed var(--line);padding:4px 0;outline:none}
+.mission-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.mission-status{font-size:11px;color:var(--green);font-weight:850}
+.subtask-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 0 50px}
+.subtask{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:11px;padding:9px;font-size:12px;min-width:0;background:var(--bg)}
+.subtask input{accent-color:var(--violet);flex-shrink:0}
+.subtask input[type=text]{min-width:0;width:100%;border:0;background:transparent;color:var(--ink);outline:none;font-size:11px;padding:2px}
+.mission-actions{display:flex;justify-content:space-between;align-items:center;margin:12px 0 0 50px;gap:8px}
+.complete-task{font-size:11px;padding:8px 12px}
+.mission-card.completed{border-color:var(--green);background:linear-gradient(120deg,var(--paper),var(--violet2))}
+.attribute-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.attribute-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px}
+.attribute-card .row{display:flex;justify-content:space-between;gap:8px}
+.attribute-card strong{font:750 20px Georgia,serif}
+.attribute-card small{color:var(--muted)}
+.attribute-card .progress-track{margin:12px 0 7px}
+.big-number{font:850 40px Georgia,serif;color:var(--violet);margin:12px 0}
+.mini-attributes{display:grid;gap:9px}
+.mini-row{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:11px}
+.mini-row .progress-track{height:7px}
+.story-panel{padding:clamp(20px,5vw,38px)}
+.story-text{font:17px/1.85 Georgia,serif;margin:20px 0}
+.story-text p{margin:0 0 16px}
+.choice-list{display:grid;gap:9px;margin:20px 0}
+.choice{width:100%;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);font:15px/1.5 Georgia,serif;padding:14px;box-shadow:none}
+.choice.selected{border:2px solid var(--violet);background:var(--violet2)}
+.gate-note{font-size:12px;padding:12px 14px;background:var(--violet2);border-radius:12px;color:var(--muted)}
+.feedback{font-size:12px;color:var(--green);min-height:18px}
+.cliffhanger{background:var(--violet2);border-left:3px solid var(--gold);padding:14px;margin:16px 0;font-style:italic;border-radius:0 12px 12px 0}
+.button-row{display:flex;gap:9px;flex-wrap:wrap}
+.game-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.game-card{padding:19px;position:relative;overflow:hidden}
+.game-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.game-icon{font-size:32px;margin-bottom:5px}
+.game-card p{color:var(--muted);font-size:13px}
+.game-area{margin-top:12px}
+.game-question{background:var(--violet2);padding:13px;border-radius:12px;margin-top:10px}
+.game-options{display:grid;gap:7px;margin-top:9px}
+.game-options button{background:var(--paper);color:var(--ink);border:1px solid var(--line);text-align:left;box-shadow:none}
+.ingredient-bag{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.ingredient{background:var(--violet2);padding:5px 9px;border-radius:20px;font-size:11px}
+.companion-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.creature-choice{background:var(--paper);color:var(--ink);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:7px;padding:22px 12px;box-shadow:var(--shadow)}
+.creature-choice span{font-size:50px}
+.creature-choice small{color:var(--muted);font-weight:500}
+.companion-card{display:grid;grid-template-columns:180px 1fr;align-items:center;gap:22px}
+.companion-art{font-size:110px;text-align:center;background:var(--violet2);border-radius:18px;padding:25px}
+.chronicle-stats{margin-bottom:12px}
+.timeline{display:grid;gap:9px}
+.timeline-item{border-left:2px solid var(--gold);padding:4px 0 4px 13px}
+.timeline-item small{display:block;color:var(--muted)}
+textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--ink);resize:vertical;margin:8px 0}
+input[type=text],form input{padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+form{display:flex;gap:8px}form input{flex:1;min-width:0}
+.house-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.house{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:17px;border-top:4px solid var(--house)}
+.house .crest{font-size:28px}.house p{color:var(--muted);font-size:13px}
+.arc{padding:13px;border:1px solid var(--line);border-radius:12px;margin:9px 0}
+.arc.current{background:var(--violet2);border-color:var(--violet)}
+.arc h4{margin:0}.arc p{margin:4px 0;color:var(--muted);font-size:12px}
+.calendar-events{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.calendar-event{padding:11px;background:var(--violet2);border-radius:10px;font-size:12px}
+.checkpoint-list{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.checkpoint{background:var(--violet2);padding:10px;border-radius:10px;text-align:center;font-size:11px}
+.checkpoint b{display:block;font-size:18px;color:var(--violet)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding-bottom:28px}
+@media(max-width:680px){
+ header,main,footer{padding-left:14px;padding-right:14px}
+ .topbar{padding-top:18px}
+ .quick-stats{grid-template-columns:repeat(2,1fr)}
+ .dashboard-grid,.game-grid{grid-template-columns:1fr}
+ .attribute-grid{grid-template-columns:1fr}
+ .subtask-list{grid-template-columns:1fr;margin-left:0}
+ .mission-actions{margin-left:0}
+ .companion-choices{grid-template-columns:1fr}
+ .companion-card{grid-template-columns:1fr}
+ .companion-art{font-size:82px}
+ .house-grid{grid-template-columns:1fr}
+ .calendar-events{grid-template-columns:1fr}
+ .checkpoint-list{grid-template-columns:repeat(3,1fr)}
+ .section-heading{align-items:flex-start}
+ .section-heading>.pill{margin-top:10px}
+ .story-text{font-size:16px}
+ .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:30;margin:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:var(--nav);border-top:1px solid #ffffff20;box-shadow:0 -8px 28px #11132225;gap:6px}
+ .tabs button{background:#292b40;color:#d9d8e8;border-color:#41435b;padding:9px 12px;font-size:11px;flex:0 0 auto}
+ .tabs button.active{background:var(--violet);color:white;border-color:var(--violet)}
+ main{padding-bottom:105px}
+ .mission-tools{justify-content:flex-start}
+}
+
+
+/* V6 identity, Ikigai, spellcasting and ritual systems */
+.v6-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.v6-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.v6-card h3{margin-top:3px}.v6-card p,.v6-card small{color:var(--muted)}
+.v6-stat{font:800 28px Georgia,serif;color:var(--violet)}
+.circle-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.circle{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--paper)}
+.circle.active{border-color:var(--gold);background:linear-gradient(135deg,var(--paper),var(--violet2));box-shadow:0 0 0 1px var(--gold)}
+.circle .orb{font-size:25px}.circle b{display:block}.circle small{color:var(--muted)}
+.ikigai-core{text-align:center;border-radius:18px;padding:22px;background:radial-gradient(circle,var(--violet2),var(--paper));border:1px solid var(--gold);margin-top:12px}
+.core-orb{font-size:46px;filter:drop-shadow(0 0 12px #e8bd62)}
+.badge-grid,.spell-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.unlock-badge,.spell{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--bg)}
+.unlock-badge.unlocked,.spell.unlocked{border-color:var(--gold);background:var(--violet2)}
+.unlock-badge .symbol,.spell .symbol{font-size:25px}
+.rune-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);padding:12px;border-radius:12px;margin:8px 0}
+.anchor-item{padding:12px;border:1px dashed var(--gold);border-radius:12px;margin:8px 0}
+.boss-health{height:13px;border-radius:30px;background:var(--line);overflow:hidden}.boss-health i{display:block;height:100%;background:linear-gradient(90deg,#8e4caa,#d9a957)}
+.cast-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#111321eF;color:white;text-align:center;pointer-events:none;animation:castFade 1.8s ease forwards}
+.cast-overlay .burst{font-size:75px;animation:burst 1.3s ease both}.cast-overlay h2{color:#f4d58d}
+@keyframes burst{0%{transform:scale(.2) rotate(-30deg);opacity:0}45%{transform:scale(1.25) rotate(8deg);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes castFade{0%,75%{opacity:1}100%{opacity:0}}
+.notification-preview{border-radius:13px;background:var(--nav);color:#fff;padding:14px;margin:10px 0}
+.notification-preview small{color:#c9c5e8}
+input[type=time]{padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+@media(max-width:680px){.v6-grid{grid-template-columns:1fr}.badge-grid,.spell-grid{grid-template-columns:repeat(2,1fr)}}
+
+</style>
+<title>A Wizard Experience of 365 Days — Aurelion Academy</title>
 </head>
 <body>
 <header class="topbar">
@@ -35,6 +225,7 @@
     <button class="tab" data-tab="companion">Companion</button>
     <button class="tab" data-tab="chronicle">Chronicle</button>
     <button class="tab" data-tab="academy">Academy</button>
+    <button class="tab" data-tab="codex">Arcane Codex</button>
   </nav>
 
   <section id="homeView" class="view">
@@ -46,6 +237,7 @@
       <article class="panel"><small class="eyebrow">WEEKLY TOURNAMENT</small><h3 id="tournamentStatus">The Academy Trials</h3><p id="tournamentText">Complete a knowledge challenge to record your weekly result.</p><button class="secondary" data-goto="games">Enter gaming hall</button></article>
     </div>
     <article class="panel"><div class="section-heading"><div><small class="eyebrow">A SMALL STEP COUNTS</small><h3>Today's progress</h3></div><b id="dailyPercent">0%</b></div><div class="progress-track"><i id="dailyProgress"></i></div><p class="muted">No missed day destroys your progress. Return when you are ready.</p></article>
+    <article class="panel"><div class="section-heading"><div><small class="eyebrow">CONTEXTUAL HABIT PROMPTS</small><h3>Today’s Anchor Runes</h3></div><span class="pill">Tiny Habits</span></div><div id="homeAnchors"><p class="muted">Create your first Anchor Rune in the Arcane Codex.</p></div><button class="secondary" data-goto="codex">Manage Anchor Runes</button></article>
   </section>
 
   <section id="storyView" class="view hidden">
@@ -108,6 +300,69 @@
     <article class="panel"><small class="eyebrow">THE FIRST YEAR</small><h3>12 Monthly Story Arcs</h3><div id="arcList"></div></article>
     <article class="panel"><h3>Academy Calendar</h3><div id="calendarEvents" class="calendar-events"></div></article>
   </section>
+
+  <section id="codexView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">YOUR PERSONAL MAGIC SYSTEM</small><h2>Arcane Codex</h2><p class="muted">Turn real-life actions into identity, purpose and magical progress.</p></div><span class="pill">V6 systems</span></div>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">FOUR PILLARS OF PURPOSE</small><h3>Ikigai · The Four Arcane Circles</h3></div><span class="pill" id="ikigaiStatus">0 / 4 aligned</span></div>
+      <div class="circle-grid" id="ikigaiCircles"></div>
+      <div class="ikigai-core" id="ikigaiCore"><div class="core-orb">✧</div><h3>Ikigai Core</h3><p>Complete all four circles today to align your purpose.</p></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">WHO YOU ARE BECOMING</small><h3>Identity Stat Engine</h3></div><span class="pill" id="voteTotal">0 identity votes</span></div>
+      <p class="muted">Every checked subtask casts one vote toward an identity. Ten votes unlock a permanent badge.</p>
+      <div id="identityList" class="v6-grid"></div>
+      <h3 style="margin-top:20px">Identity Badges</h3><div id="identityBadges" class="badge-grid"></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">MAGICAL ACHIEVEMENTS</small><h3>Spellbook & Visual Casting</h3></div><span class="pill" id="spellCount">0 spells</span></div>
+      <p class="muted">Seven consecutive days on a habit unlock its signature spell. Casting effects appear when you complete a primary mission.</p>
+      <div id="spellbook" class="spell-grid"></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">WEEKLY SELF-BATTLE</small><h3>Shadow Boss Arena</h3></div><span class="pill" id="bossWeek">This week</span></div>
+      <div class="v6-card"><h3 id="bossName">Procrastination Monster</h3><p>Weekly attack power is based on your recorded completed primary missions.</p><div class="boss-health"><i id="bossHealth" style="width:100%"></i></div><p id="bossSummary">Complete missions throughout the week to build attack power.</p><button id="fightBoss">Fight weekly boss</button><p class="feedback" id="bossResult"></p></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">PROTECT YOUR RETURN</small><h3>Never Miss Twice Rune</h3></div><span class="pill" id="runeStatus">Rune ready</span></div>
+      <p class="muted">A missed day is a pause, not a failure. Complete the next day to preserve your streak. The system records your return without encouraging perfectionism.</p>
+      <div class="rune-row"><span>🛡️ Ancestral Protection Rune</span><b id="runeDetail">Ready</b></div><div class="rune-row"><span>🧪 10-day Shield Potions</span><b id="shieldPotionCount">0</b></div>
+      <p class="muted" id="runeMessage">Your streak protection is available.</p>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">INSTANT CELEBRATION</small><h3>Tiny Habits · Shine & Anchor Runes</h3></div></div>
+      <p class="muted">Choose a real-life action that already happens, then attach a small habit to it.</p>
+      <form id="anchorForm"><input id="anchorTrigger" placeholder="After I… (existing action)" required><input id="anchorHabit" placeholder="I will… (tiny habit)" required><button type="submit">Add Anchor</button></form>
+      <div id="anchorList"></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">YOUR PURPOSE</small><h3>Mirror of Erised</h3></div></div>
+      <p class="muted">Describe the person you hope to become after 365 days. Review your reflection every 30 days.</p>
+      <textarea id="futureVision" rows="3" placeholder="After 365 days, I want to become someone who…"></textarea>
+      <textarea id="currentReflection" rows="2" placeholder="What has changed since my last reflection?"></textarea>
+      <div class="button-row"><button id="saveMirror">Save my reflection</button><span id="mirrorStatus" class="feedback"></span></div>
+      <div id="mirrorHistory" class="timeline"></div>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">HABIT COMBINATIONS</small><h3>Interactive Alchemy Lab</h3></div><span class="pill" id="potionCountV6">0 elixirs</span></div>
+      <p class="muted">Ingredients are earned through real-life task completion. Craft an elixir for a limited 2× XP boost on your next eligible mission reward.</p>
+      <div id="alchemyIngredients" class="ingredient-bag"></div>
+      <button id="craftElixir">Craft 2× XP Elixir (2 ingredients)</button>
+      <p class="feedback" id="elixirStatus"></p>
+    </article>
+    <article class="panel">
+      <div class="section-heading"><div><small class="eyebrow">AURELION TIMEKEEPER</small><h3>Clock & Notifications</h3></div><span class="pill" id="notificationPermission">Permission unknown</span></div>
+      <div class="v6-grid">
+        <div class="v6-card"><small>LOCAL DEVICE TIME</small><div class="v6-stat" id="liveClock">--:--</div><p id="liveDate"></p></div>
+        <div class="v6-card"><small>DAILY REMINDERS</small><p>Three scheduled magical messages.</p><div class="rune-row"><b>Morning</b><input type="time" id="timeMorning" value="07:00"></div><div class="rune-row"><b>Afternoon</b><input type="time" id="timeAfternoon" value="13:00"></div><div class="rune-row"><b>Evening</b><input type="time" id="timeEvening" value="18:00"></div><button id="saveReminderTimes">Save reminder times</button></div>
+      </div>
+      <div class="notification-preview"><small>AURELION ACADEMY · NOTIFICATION PREVIEW</small><h3 id="notificationSentence">Your next chapter is waiting.</h3><p id="notificationBody">A small action today is a vote for your future self.</p></div>
+      <div class="button-row"><button id="enableNotifications">Enable notifications</button><button class="secondary" id="testNotification">Test notification</button></div>
+      <p class="muted">Important: Browser notifications can be delivered while this page is open. Reliable exact-time delivery after the PWA is fully closed requires a push server or native Android scheduling; this prototype cannot guarantee closed-app delivery.</p>
+      <p class="feedback" id="notificationStatus"></p>
+    </article>
+  </section>
+
 </main>
 <footer>Saved on this device · Export your records for backup · This is a progressive web app prototype, not a native Android APK.</footer>
 <script src="js/app.js"></script>
