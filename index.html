@@ -170,7 +170,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding-bottom:28px}
 }
 
 
-/* V6 identity, Ikigai, spellcasting and ritual systems */
+/* V8 identity, Ikigai, spellcasting and ritual systems */
 .v6-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .v6-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
 .v6-card h3{margin-top:3px}.v6-card p,.v6-card small{color:var(--muted)}
@@ -197,10 +197,43 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding-bottom:28px}
 input[type=time]{padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
 @media(max-width:680px){.v6-grid{grid-template-columns:1fr}.badge-grid,.spell-grid{grid-template-columns:repeat(2,1fr)}}
 
+
+/* V9: Aurelion welcome gateway and daily living-world cards */
+.welcome-screen{min-height:100vh;background:radial-gradient(circle at 80% 12%,#7965c7 0,transparent 28%),linear-gradient(145deg,#111426,#222044 58%,#34295a);color:#fff;padding:clamp(14px,3vw,30px);}
+.welcome-hero{max-width:1120px;margin:0 auto;min-height:430px;border:1px solid #ffffff25;border-radius:28px;padding:clamp(25px,6vw,64px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 24%,#7864b855,transparent 38%),linear-gradient(120deg,#17182c,#242044 58%,#29214a);box-shadow:0 25px 70px #0006}
+.welcome-hero:after{content:'✧';position:absolute;right:8%;top:5%;font-size:clamp(100px,20vw,220px);color:#f4d58d20;pointer-events:none}.welcome-copy{max-width:720px;position:relative;z-index:1}.welcome-copy h1{font-size:clamp(42px,8vw,76px);line-height:1.02;margin:15px 0;font-weight:900;letter-spacing:-.045em}.welcome-copy h1 span{color:#f2d18a}.welcome-copy h2{font:600 clamp(20px,3vw,29px) Georgia,serif;color:#e9e1ff}.welcome-copy p{font-size:16px;color:#d8d3ee;max-width:570px}.welcome-shimmer{color:#f2d18a;letter-spacing:18px;font-size:23px}.welcome-enter{margin-top:18px;background:linear-gradient(100deg,#d7aa5d,#f0d69a);color:#29213b;padding:14px 24px;border-radius:999px;font-size:14px;box-shadow:0 8px 25px #d7aa5d35}.welcome-quote{align-self:flex-end;display:grid;text-align:right;margin-top:35px;color:#f4e6bd;font:italic 18px Georgia,serif;position:relative;z-index:1}.welcome-quote small{font:11px system-ui;color:#c8c0e1;margin-top:5px}.welcome-content{max-width:1120px;margin:18px auto 0;display:grid;gap:14px}.welcome-card{background:#fffdf9;color:#29263d;border:1px solid #ffffff30;border-radius:20px;padding:clamp(17px,3vw,25px);box-shadow:0 12px 35px #0002}.welcome-card p{color:#777487}.welcome-card h2{font-size:clamp(24px,4vw,32px);margin:5px 0}.welcome-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:17px}.welcome-actions button{background:#f0edf9;color:#5148a8;border:1px solid #e4def5;box-shadow:none;padding:13px 10px}.welcome-world-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.event-card{background:linear-gradient(135deg,#fffdf9,#fff1d8)}.fact-card{background:linear-gradient(135deg,#fffdf9,#eeeafd)}.event-tag{display:inline-block;margin-top:8px;padding:5px 9px;border-radius:999px;background:#eeeafd;color:#5e51b7;font-size:10px;font-weight:850;letter-spacing:.1em}.welcome-footnote{text-align:center;color:#c9c3e2;font-size:12px;padding:5px 0 18px}
+@media(max-width:680px){.welcome-hero{min-height:430px;padding:25px 20px}.welcome-actions{grid-template-columns:repeat(2,1fr)}.welcome-world-grid{grid-template-columns:1fr}.welcome-quote{align-self:flex-start;text-align:left}}
+
 </style>
 <title>A Wizard Experience of 365 Days — Aurelion Academy</title>
 </head>
 <body>
+<section id="welcomeView" class="welcome-screen">
+  <div class="welcome-hero">
+    <div class="welcome-shimmer">✦ ✧ ✦</div>
+    <div class="welcome-copy">
+      <small class="eyebrow">AURELION INSTITUTE OF ARCANE STUDIES</small>
+      <h1>Welcome to Your<br><span>Wizard Journey</span></h1>
+      <h2>Aurelion Castle awaits, Nithish.</h2>
+      <p>365 days of friendship, discovery, courage and everyday magic begin with one small step.</p>
+      <button id="enterAurelion" class="welcome-enter">Enter Aurelion ✦</button>
+    </div>
+    <div class="welcome-quote"><span>“What will you make of today?”</span><small>— The Aurelion Academy</small></div>
+  </div>
+  <div class="welcome-content">
+    <section class="welcome-card mind-card"><small class="eyebrow">A MOMENT FOR YOURSELF</small><h2>What's on your mind?</h2><p>Choose where today's journey takes you.</p>
+      <div class="welcome-actions">
+        <button data-welcome-goto="home">🏰 Command Center</button><button data-welcome-goto="story">📖 Continue Story</button><button data-welcome-goto="missions">✨ Daily Missions</button><button data-welcome-goto="academy">🪄 Explore Academy</button>
+      </div>
+    </section>
+    <div class="welcome-world-grid">
+      <article class="welcome-card event-card"><small class="eyebrow">TODAY IN AURELION</small><h3 id="welcomeEventTitle">The Academy's daily wonder</h3><p id="welcomeEventText">A new event is waiting inside the castle.</p><span class="event-tag" id="welcomeEventTag">DAILY EVENT</span></article>
+      <article class="welcome-card fact-card"><small class="eyebrow">365 MAGICAL FACTS</small><h3 id="welcomeFactTitle">Aurelion Field Notes</h3><p id="welcomeFactText">Discover a new magical fact every day.</p><span class="event-tag" id="welcomeFactTag">FACT 001 / 365</span></article>
+    </div>
+    <p class="welcome-footnote">Your real-life actions shape Nithish's growth inside the story. Welcome home.</p>
+  </div>
+</section>
+<div id="appShell" class="hidden">
 <header class="topbar">
   <div><small class="eyebrow">AURELION INSTITUTE · YOUR FIRST YEAR</small><h1>A WIZARD EXPERIENCE <span>OF 365 DAYS</span></h1></div>
   <button id="themeToggle" class="icon-button" aria-label="Toggle theme">☾</button>
@@ -302,7 +335,7 @@ input[type=time]{padding:8px;border:1px solid var(--line);border-radius:9px;back
   </section>
 
   <section id="codexView" class="view hidden">
-    <div class="section-heading"><div><small class="eyebrow">YOUR PERSONAL MAGIC SYSTEM</small><h2>Arcane Codex</h2><p class="muted">Turn real-life actions into identity, purpose and magical progress.</p></div><span class="pill">V6 systems</span></div>
+    <div class="section-heading"><div><small class="eyebrow">YOUR PERSONAL MAGIC SYSTEM</small><h2>Arcane Codex</h2><p class="muted">Turn real-life actions into identity, purpose and magical progress.</p></div><span class="pill">V8 systems</span></div>
     <article class="panel">
       <div class="section-heading"><div><small class="eyebrow">FOUR PILLARS OF PURPOSE</small><h3>Ikigai · The Four Arcane Circles</h3></div><span class="pill" id="ikigaiStatus">0 / 4 aligned</span></div>
       <div class="circle-grid" id="ikigaiCircles"></div>
@@ -365,5 +398,6 @@ input[type=time]{padding:8px;border:1px solid var(--line);border-radius:9px;back
 
 </main>
 <footer>Saved on this device · Export your records for backup · This is a progressive web app prototype, not a native Android APK.</footer>
+</div>
 <script src="js/app.js"></script>
 </body></html>
