@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="A 365-day magical academy, personal growth and productivity RPG.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
+<title>A Wizard Experience of 365 Days</title>
+</head>
+<body>
+<header class="topbar">
+  <div><small class="eyebrow">AURELION INSTITUTE · YOUR FIRST YEAR</small><h1>A WIZARD EXPERIENCE <span>OF 365 DAYS</span></h1></div>
+  <button id="themeToggle" class="icon-button" aria-label="Toggle theme">☾</button>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero-copy"><small id="arcLabel" class="eyebrow">YOUR JOURNEY BEGINS</small><h2 id="welcomeTitle">Welcome to Aurelion.</h2><p id="welcomeText">A year of learning, courage, friendship and discovery awaits.</p></div>
+    <div class="hero-bottom"><div><b id="dayLabel">Day 001 / 365</b><span id="levelLabel">Level 1 · 0 XP</span></div><div class="year-track"><i id="yearProgress"></i></div></div>
+  </section>
+  <section class="quick-stats">
+    <article><small>HOUSE</small><b id="houseStat">Elmwood</b></article>
+    <article><small>WIZARD XP</small><b id="xpStat">0</b></article>
+    <article><small>FLAME STREAK</small><b id="streakStat">0 days</b></article>
+    <article><small>MISSIONS</small><b id="missionStat">0 / 8</b></article>
+  </section>
+  <nav class="tabs" aria-label="Main navigation">
+    <button class="tab active" data-tab="home">Command Center</button>
+    <button class="tab" data-tab="story">Daily Story</button>
+    <button class="tab" data-tab="missions">8 Daily Tasks</button>
+    <button class="tab" data-tab="attributes">Attributes</button>
+    <button class="tab" data-tab="games">Gaming Hall</button>
+    <button class="tab" data-tab="companion">Companion</button>
+    <button class="tab" data-tab="chronicle">Chronicle</button>
+    <button class="tab" data-tab="academy">Academy</button>
+  </nav>
+
+  <section id="homeView" class="view">
+    <div class="section-heading"><div><small class="eyebrow">YOUR DAILY OVERVIEW</small><h2>Academy Command Center</h2></div><span class="pill" id="todayDate"></span></div>
+    <div class="dashboard-grid">
+      <article class="panel welcome-panel"><small class="eyebrow">TODAY'S DIRECTIVE</small><h3 id="dailyDirective">Your first step begins here.</h3><p>Complete your real-world missions to grow your character. Your story, skills and academy records are saved on this device.</p><button class="primary" data-goto="missions">Open today's missions</button></article>
+      <article class="panel progress-panel"><small class="eyebrow">CHARACTER DEVELOPMENT</small><div id="miniAttributes" class="mini-attributes"></div></article>
+      <article class="panel"><small class="eyebrow">STORY PROGRESS</small><div class="big-number" id="storyProgress">1 / 365</div><p class="muted">Days of your Aurelion journey</p><button class="secondary" data-goto="story">Continue the story</button></article>
+      <article class="panel"><small class="eyebrow">WEEKLY TOURNAMENT</small><h3 id="tournamentStatus">The Academy Trials</h3><p id="tournamentText">Complete a knowledge challenge to record your weekly result.</p><button class="secondary" data-goto="games">Enter gaming hall</button></article>
+    </div>
+    <article class="panel"><div class="section-heading"><div><small class="eyebrow">A SMALL STEP COUNTS</small><h3>Today's progress</h3></div><b id="dailyPercent">0%</b></div><div class="progress-track"><i id="dailyProgress"></i></div><p class="muted">No missed day destroys your progress. Return when you are ready.</p></article>
+  </section>
+
+  <section id="storyView" class="view hidden">
+    <article class="panel story-panel">
+      <div class="section-heading"><div><small id="episodeArc" class="eyebrow"></small><h2 id="episodeTitle"></h2></div><span id="episodeDay" class="pill"></span></div>
+      <div id="storyText" class="story-text"></div>
+      <div id="choiceGate" class="gate-note"></div>
+      <div id="choiceArea" class="choice-list"></div><p id="choiceFeedback" class="feedback"></p>
+      <div id="cliffhanger" class="cliffhanger hidden"></div>
+      <div class="button-row"><button id="completeDay" class="primary" disabled>Complete today's episode</button><button id="nextDay" class="secondary hidden">Continue to next day →</button></div>
+    </article>
+  </section>
+
+  <section id="missionsView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">REAL LIFE · REAL PROGRESS</small><h2>The Eight Daily Pillars</h2><p class="muted">Each primary task has three editable subtasks. Complete a primary task to earn its character reward.</p></div><span class="pill" id="taskCount">0 / 8 complete</span></div>
+    <div class="mission-tools"><button id="resetTasks" class="text-button">Reset today's checklist</button><button id="exportData" class="text-button">Export my records</button><label class="text-button import-label">Import records<input id="importData" type="file" accept="application/json"></label></div>
+    <div id="missionList" class="mission-list"></div>
+    <article class="panel add-mission"><h3>Additional personal quest</h3><form id="addQuestForm"><input id="newQuest" maxlength="100" placeholder="Add an optional mission…" required><button class="primary">Add quest</button></form><div id="extraQuestList"></div></article>
+  </section>
+
+  <section id="attributesView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">YOUR CHARACTER</small><h2>Character Attributes</h2><p class="muted">Your actions develop different parts of your wizard.</p></div></div>
+    <div id="attributeList" class="attribute-grid"></div>
+    <article class="panel"><h3>How character growth works</h3><p>Early Wake-up develops Vitality; exercise develops Strength; avoiding bad habits develops Discipline; study develops Intelligence; skill practice develops Expertise; phone control develops Self-Control; tidiness and happiness develop Well-being; and a consistent sleep cycle develops Recovery and Vitality.</p><p class="muted">Attribute XP is awarded once per completed primary task each day. Editing a task does not erase past records.</p></article>
+  </section>
+
+  <section id="gamesView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">CONNECTED + INDEPENDENT PLAY</small><h2>The Academy Gaming Hall</h2><p class="muted">Play for fun, practice knowledge and collect in-world discoveries. Games are optional.</p></div></div>
+    <div class="game-grid">
+      <article class="game-card"><div class="game-icon">⚡</div><small class="eyebrow">CONNECTED</small><h3>Spell Duel Arena</h3><p>Answer a question to cast a spell in a friendly duel.</p><button class="primary" id="startDuel">Start a duel</button><div id="duelArea" class="game-area"></div></article>
+      <article class="game-card"><div class="game-icon">⚗️</div><small class="eyebrow">CONNECTED</small><h3>Potion Crafting</h3><p>Combine ingredients discovered through your academy activities.</p><div id="ingredientBag" class="ingredient-bag"></div><button class="secondary" id="craftPotion">Craft a potion</button><p id="potionResult" class="feedback"></p></article>
+      <article class="game-card"><div class="game-icon">🗝️</div><small class="eyebrow">CONNECTED</small><h3>Dungeon of Knowledge</h3><p>Clear a room by solving a short knowledge challenge.</p><button class="primary" id="startDungeon">Enter dungeon</button><div id="dungeonArea" class="game-area"></div></article>
+      <article class="game-card"><div class="game-icon">🏆</div><small class="eyebrow">CONNECTED</small><h3>Grand Academy Tournament</h3><p>Record your weekly best score. The board resets its active challenge each week.</p><div class="big-number" id="tournamentScore">0</div><button class="secondary" id="startTournament">Take this week's trial</button><div id="tournamentArea" class="game-area"></div></article>
+      <article class="game-card"><div class="game-icon">✦</div><small class="eyebrow">INDEPENDENT</small><h3>Rune Memory</h3><p>Match the magical symbols in this independent memory challenge.</p><button class="secondary" id="startMemory">Play memory</button><div id="memoryArea" class="game-area"></div></article>
+      <article class="game-card"><div class="game-icon">♜</div><small class="eyebrow">INDEPENDENT</small><h3>Logic Chamber</h3><p>Try a standalone logic question whenever you like.</p><button class="secondary" id="startLogic">Open logic challenge</button><div id="logicArea" class="game-area"></div></article>
+    </div>
+  </section>
+
+  <section id="companionView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">YOUR LIFELONG PARTNER</small><h2>Magical Companion</h2><p class="muted">Choose one companion. Your companion stays with you throughout the 365-day journey.</p></div></div>
+    <div id="companionSetup" class="companion-choices">
+      <button class="creature-choice" data-creature="dragon"><span>🐉</span><b>Ember the Dragon</b><small>Brave · Energetic · Loyal</small></button>
+      <button class="creature-choice" data-creature="owl"><span>🦉</span><b>Wisp the Owl</b><small>Wise · Curious · Calm</small></button>
+      <button class="creature-choice" data-creature="fox"><span>🦊</span><b>Thistle the Fox</b><small>Playful · Clever · Gentle</small></button>
+    </div>
+    <article id="companionCard" class="panel companion-card hidden"><div class="companion-art" id="companionArt">🐉</div><div><small class="eyebrow">YOUR PERMANENT COMPANION</small><h3 id="companionName">Ember</h3><p id="companionMood">Happy to travel with you.</p><div class="progress-track"><i id="companionProgress"></i></div><p id="companionLevel" class="muted">Bond level 1</p><div class="button-row"><button id="talkCompanion" class="primary">Spend a moment together</button><button id="feedCompanion" class="secondary">Share a treat</button></div><p id="companionMessage" class="feedback"></p></div></article>
+  </section>
+
+  <section id="chronicleView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">YOUR PERSONAL RECORD</small><h2>The Wizard's Chronicle</h2><p class="muted">A record of your actual tasks, choices, achievements and growth.</p></div></div>
+    <div class="quick-stats chronicle-stats"><article><small>MISSIONS COMPLETED</small><b id="totalTasks">0</b></article><article><small>STORY EPISODES</small><b id="totalEpisodes">0</b></article><article><small>GAMES PLAYED</small><b id="gamesPlayed">0</b></article></div>
+    <article class="panel"><h3>Recent milestones</h3><div id="milestoneList" class="timeline"></div></article>
+    <article class="panel"><h3>Daily reflection</h3><p class="muted">Write one honest sentence about your day.</p><textarea id="reflection" rows="3" maxlength="500" placeholder="Today I learned…"></textarea><button id="saveReflection" class="primary">Save reflection</button><p id="reflectionStatus" class="feedback"></p></article>
+    <article class="panel"><h3>Future Self checkpoints</h3><p>Compare your real records at Days 1, 90, 180, 270 and 365. Checkpoints are based on your saved data, not fictional scores.</p><div id="checkpointList" class="checkpoint-list"></div></article>
+  </section>
+
+  <section id="academyView" class="view hidden">
+    <div class="section-heading"><div><small class="eyebrow">THE WORLD OF AURELION</small><h2>Academy Records</h2></div></div>
+    <div class="house-grid" id="housesView"></div>
+    <article class="panel"><small class="eyebrow">THE FIRST YEAR</small><h3>12 Monthly Story Arcs</h3><div id="arcList"></div></article>
+    <article class="panel"><h3>Academy Calendar</h3><div id="calendarEvents" class="calendar-events"></div></article>
+  </section>
+</main>
+<footer>Saved on this device · Export your records for backup · This is a progressive web app prototype, not a native Android APK.</footer>
+<script src="js/app.js"></script>
+</body></html>
